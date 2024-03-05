@@ -1,6 +1,10 @@
+
+
 export default function Page() {
     return (
-      <h1>hola desde empresas</h1>
+
+      <h1>hola desde dashboard</h1>
+  
     );
   }
   

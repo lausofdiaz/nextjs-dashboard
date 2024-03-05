@@ -20,10 +20,10 @@ export default function LoginPage() {
   const [changeIcon, setChangeIcon] = useState(false);
 
   return (
-    <body className="">
+   
       <div className="flex items-center justify-center h-screen">
         <div className="bg-white p-8 rounded-xl shadow-md max-w-lg w-full">
-          <br></br>
+        
           {/*imagen del logo Visualitté */}
           <div className="mb-4 text-center">
             <Image src="/customers/vsualitteLogo.png" alt="Logo" width={190} height={100} className="mx-auto" priority={true}/>
@@ -66,7 +66,7 @@ export default function LoginPage() {
           </div>
           {/*div que contiene el botón para ingresar */}
           <div className="mb-4">
-          <Link href="/menu">
+          <Link href="/visualitecrm">
           <button className="w-full text-white p-2 rounded-2xl">
               Ingresar
             </button>
@@ -80,6 +80,6 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-    </body>
+  
   );
 }

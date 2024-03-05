@@ -12,7 +12,7 @@ const config: Config = {
         '13': 'repeat(13, minmax(0, 1fr))',
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
+        'sans': ['Poppins', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
         blue: {

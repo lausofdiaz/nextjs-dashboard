@@ -1,9 +1,5 @@
-
-
 export default function Page() {
   return (
-  <html>
-    
-  </html>
+    <h1>hola desde inicio</h1>
   );
 }

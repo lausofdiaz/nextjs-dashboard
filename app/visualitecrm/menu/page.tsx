@@ -14,10 +14,10 @@ import Link from 'next/link';
 export default function MenuDashboard() {
   const [open, setOpen] = useState(true);
   const links = [
-    { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
-    { name: 'Usuarios', href: '/dashboard/usuarios', icon: UserIcon },
-    { name: 'Empresas', href: '/dashboard/empresas', icon: BuildingOffice2Icon },
-    { name: 'Medios de contacto', href: '/dashboard/canalesDeContacto', icon: PhoneIcon },
+    { name: 'Inicio', href: '/visualitecrm/dashboard', icon: HomeIcon },
+    { name: 'Usuarios', href: '/visualitecrm//usuarios', icon: UserIcon },
+    { name: 'Empresas', href: '/visualitecrm//empresas', icon: BuildingOffice2Icon },
+    { name: 'Medios de contacto', href: '/visualitecrm//canalesDeContacto', icon: PhoneIcon },
   ];
   const out = [
     { name: 'Cerrar sesión', href: '/login', icon: PowerIcon }

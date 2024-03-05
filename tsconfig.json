@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.js",
     "scripts/seed.js"
-, "app/page.tsx", "app/recoverPassword/page.tsx", "app/login/page.tsx", "app/menu/page.tsx", "app/changePassword/page.tsx"  ],
+, "app/page.tsx", "app/recoverPassword/page.tsx", "app/login/page.tsx", "app/visualitecrm/menu/page.tsx", "app/changePassword/page.tsx"  ],
   "exclude": ["node_modules"]
 }
