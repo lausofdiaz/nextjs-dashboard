@@ -1,48 +1,94 @@
 'use client';
-/*para poder usar el hook useState para realizar la modificación del ícono de mostrar y coultar contraseña
-se utilizó use client, ya que este hook solo funciona de este lado */
 import Image from "next/image";
-/*Permite optimizar mejor la utilización de imagenes ya que esta es una opción que brinda next */
 import './page.css';
 import Link from 'next/link';
-/*redirección a otros componentes */
-import { useState } from "react";
-/*hook useState que solo funciona del lado del cliente*/
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   EyeIcon,
   EyeSlashIcon
 } from '@heroicons/react/24/outline';
-/*Importación de los íconos que fueron utilizados*/
+import router from "next/router";
+import { useSearchParams } from "next/navigation";
+import axios from "axios";
+import { useRouter } from 'next/navigation';
+
 
 export default function changePassword() {
+  const router = useRouter();
 
-  //constante para poder realizar el cambio del ícono de mostrar y ocultar contraseña
   const [changeIcon, setChangeIcon] = useState(false);
   const [changeIconConfirm, setChangeIconConfirm] = useState(false);
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [userId, setUserId] = useState("");
+  const [token, setToken] = useState("");
+  const searchParams = useSearchParams();
+
+   const ResetPasswordRequest = {
+    password,
+    confirmPassword
+  }
+
+  const handlePasswordInputChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setPassword(event.target.value)
+  }
+
+  const handleConfirmPasswordInputChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setConfirmPassword(event.target.value)
+  }
+
+  useEffect(() => {
+      const userIdParam = searchParams.get("userId");
+      const tokenParam = encodeURIComponent(searchParams.get("token") || "");
+      if (userIdParam && tokenParam) {
+        setUserId(userIdParam);
+        setToken(tokenParam);
+      }
+    }, [searchParams]);
+  
+    const handleSubmit = async (event: { preventDefault: () => void; }) => {
+      event.preventDefault();
+      console.log("user Id",userId)
+      console.log("token",token)
+      try {
+        const response = await axios.patch<any>(`https://localhost:7195/api/users/reset-password?userId=${userId}&token=${token}`,
+      {
+        password,
+        confirmPassword
+      }
+    );
+        console.log("Respuesta del servidor: ok", response.data);
+        
+        router.push('/login');
+      } catch (error) {
+        console.error("Error al enviar los datos:", error);
+      }
+    };
+
   return (
-    <body className="">
       <div className="flex items-center justify-center h-screen">
         <div className="bg-white p-8 rounded-xl shadow-md max-w-lg w-full">
           <br></br>
-          
-          {/*imagen del logo Visualitté */}
-          <div className="mb-4 text-center">
+         <div className="mb-4 text-center">
             <Image src="/customers/vsualitteLogo.png" alt="Logo" width={190} height={100} className="mx-auto" priority={true}/>
            <br></br>
             <div className="mb-2 text-xl text-center font-bold">Cambiar contraseña</div>
           </div>
           <br></br>
-           {/*div que contiene label e input de contraseña nueva*/}
+          <form onSubmit={handleSubmit}>
           <div className="mb-2 text-lg">Contraseña nueva</div>
           <div className="mb-4 relative">
-            {/*validación dentro del input que permite cambiar el tipo de datos del input
-            Esto funciona en conjunto con el cambio de ícono de mostrar y ocultar contraseña*/}
             <input
               type={changeIcon ? "text" : "password"}
               placeholder="Contraseña nueva"
               className="w-full p-2 border border-gray-300 rounded-md text-gray-500 border-black"
+              value={password}
+              onChange={handlePasswordInputChange}
             />
-            {/*validación que permite realizar el cambio de ícono*/}
             <div
               className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer"
               onClick={() => setChangeIcon(!changeIcon)}>
@@ -53,18 +99,15 @@ export default function changePassword() {
               )}
             </div>
           </div>
-
-          {/*div que contiene label e input de la contraseña*/}
           <div className="mb-2 text-lg">Confirmar contraseña</div>
           <div className="mb-4 relative">
-            {/*validación dentro del input que permite cambiar el tipo de datos del input
-            Esto funciona en conjunto con el cambio de ícono de mostrar y ocultar contraseña*/}
             <input
               type={changeIconConfirm ? "text" : "password"}
               placeholder="Confirme la nueva contraseña"
               className="w-full p-2 border border-gray-300 rounded-md text-gray-500 border-black"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordInputChange}
             />
-            {/*validación que permite realizar el cambio de ícono*/}
             <div
               className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer"
               onClick={() => setChangeIconConfirm(!changeIconConfirm)}>
@@ -75,20 +118,13 @@ export default function changePassword() {
               )}
             </div>
           </div>
-          {/*div que contiene el botón para ingresar */}
           <div className="mb-4">
-            <button className="w-full text-white p-2 rounded-2xl">
+            <button type="submit" className="w-full text-white p-2 rounded-2xl">
               Ingresar
             </button>
           </div>
-          {/*div que contiene la redirección al layout de iniciar*/}
-          <div className="text-center">
-            <Link href="/login">
-              <span className="text-blue-500">Iniciar sesión</span>
-            </Link>
-          </div>
+          </form>
         </div>
-      </div>
-    </body>
+      </div>   
   );
 }

@@ -4,3 +4,8 @@ button[type="submit"]{
     border: 2px solid transparent;
     
 }
+button:hover{
+    color: #662483;
+    background: #ffff;
+    border: 2px solid #662483;
+}

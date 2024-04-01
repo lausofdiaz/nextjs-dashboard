@@ -1,7 +1,5 @@
-
 import './ui/global.css';
 import React from 'react';
-
 
 export default function RootLayout({
   children,
@@ -9,7 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html >
         <body className="font-sans">
         {children}
         </body>

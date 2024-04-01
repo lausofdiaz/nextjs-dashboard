@@ -5,7 +5,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen ">
     <MenuDashboard />
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto ">
         {children}
       </div>
     </div>
