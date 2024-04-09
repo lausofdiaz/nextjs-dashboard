@@ -6,18 +6,18 @@ import {
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios, { AxiosRequestConfig } from 'axios';
-import { Company } from '../types/Company';
-import { User } from '../types/User';
+import { Company } from '@/components/types/Company';
+import { User } from '@/components/types/User';
 import { Checkbox } from "@nextui-org/react";
 import Swal from 'sweetalert2';
-import { getUsersWithToken, registerUser } from '@/api/addUsers';
 
-export default function AddUsers({ isVisible, onClose }: { isVisible: boolean, onClose: () => void }) {
+export default function InformationUsers({ isVisible, onClose }: { isVisible: boolean, onClose: () => void }) {
   if (!isVisible) return null;
   const [changeIcon, setChangeIcon] = useState(false);
   const [estadoActivo, setEstadoActivo] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [companys, setCompany] = useState<Company[]>([]);
+
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -46,30 +46,51 @@ export default function AddUsers({ isVisible, onClose }: { isVisible: boolean, o
     }
   };
 
+
   useEffect(() => {
-    const fetchData = async () => {
+    const getUsersWithToken = async () => {
       try {
-        const data = await getUsersWithToken();
-        setCompany(data);
+        const token = Cookies.get('token');
+        if (!token) {
+          throw new Error('No hay token de sesión');
+        }
+        const config: AxiosRequestConfig = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const responses = await axios.get('https://localhost:7195/api/company', config);
+        console.log('Data from API:', responses.data); // Imprimir en la consola
+        setCompany(responses.data);
       } catch (error) {
         console.error('Error fetching users:', error);
-        // Manejar errores de manera adecuada
       }
     };
-    fetchData();
+    getUsersWithToken();
   }, []);
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     try {
-      await registerUser(formData);
+      const token = Cookies.get('token');
+      if (!token) {
+        throw new Error('No hay token de sesión');
+      }
+      const config: AxiosRequestConfig = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.post('https://localhost:7195/api/authentication/register', formData, config);
+      console.log(response.data);
       Swal.fire({
         icon: 'success',
         title: 'Usuario registrado',
         showConfirmButton: false,
         timer: 3000,
       }).then(() => {
+        // Limpiar los campos del formulario después de la alerta
         setFormData({
           firstName: "",
           LastName: "",      
@@ -78,10 +99,16 @@ export default function AddUsers({ isVisible, onClose }: { isVisible: boolean, o
           phoneNumber: "",
           roles: [] as string[],
         });
-      });
-    } catch (error) {
-      console.error('Error al enviar la solicitud POST:', error);
-      // Manejar errores de manera adecuada
+    });
+} 
+    catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        console.error('Error: No autorizado para realizar esta acción');
+        // Puedes mostrar un mensaje al usuario informándoles del error de autorización
+      } else {
+        console.error('Error al enviar la solicitud POST:', error);
+        // Puedes manejar otros errores aquí, por ejemplo, mostrar un mensaje de error general
+      }
     }
   };
 
@@ -117,7 +144,7 @@ export default function AddUsers({ isVisible, onClose }: { isVisible: boolean, o
                 <select name="companyId" value={formData.companyId} onChange={handleChange} className="appearance-none block w-full  xt-tegray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white bg-grey-100">
                   <option></option>
                   {companys.map(company => (
-                    <option key={company.id} value={company.id}>{company.companyName}</option>
+                    <option value={company.id}>{company.companyName}</option>
                   ))}
                 </select>
               </div>

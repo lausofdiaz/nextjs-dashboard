@@ -14,12 +14,14 @@ const config: Config = {
       fontFamily: {
         'sans': ['Poppins', 'Helvetica', 'Arial', 'sans-serif'],
       },
-      colors: {
+      colors: {       
         blue: {
           400: '#2589FE',
           500: '#0070F3',
           600: '#2F6FEB',
           100: '#7DB5F8',
+          30: '#0284a4',
+          10: '#00c2ed'
         },
         purple:{
           100: '#662483',
@@ -28,13 +30,29 @@ const config: Config = {
         grey: {
           100: '#E2E2E2',
           50:'rgba(226, 226, 226, 0.5);',
-          80: '#BAB9B9'
+          80: '#BAB9B9',
+          30:'#a5a5a5'
         }, 
         black: {
           10: 'rgba(0, 0, 0, 0.1);'
         }, 
         red:{
-          100: '#F87D7D',
+          100: '#f53411',
+          50: '#f7675e'
+        },
+        blanco:{
+          50:'rgba(255, 255, 255, 0.1);',
+        },
+        gree:{
+          100:'#65B89A',
+          50:'#CCED95'
+        }, 
+        acuamarin:{
+            100: '#2fc7ab',
+            50: '#4cdec2'
+        }, purplee:{
+          100: '#a66ed3',
+          50:'#c59bd5'
         }
       },
     },

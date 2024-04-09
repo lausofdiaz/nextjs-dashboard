@@ -27,6 +27,7 @@ export default function ConfirmEmail() {
     try {
       const response = await axios.patch<any>(`https://localhost:7195/api/users/confirm-email?userId=${userId}&token=${token}`);
       console.log("Respuesta del servidor: ok", response.data);
+      alert("confirmado")
       router.push('/login');
     } catch (error) {
       console.error("Error al enviar los datos:", error);

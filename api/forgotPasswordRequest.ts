@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { LoginSuccess } from '@/components/forms/types/LoginSuccess';
+import { LoginSuccess } from '@/components/types/LoginSuccess';
 import { api } from '@/api/axiosBaseConfig';
 
 export async function forgotPasswordRequest(

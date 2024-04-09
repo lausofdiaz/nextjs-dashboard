@@ -23,4 +23,5 @@ export type Company = {
   address: string;
   bussinessSectorId:number; 
   contactUserId:string;
+  isActive: boolean;
  }

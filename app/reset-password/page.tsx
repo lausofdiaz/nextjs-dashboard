@@ -24,7 +24,7 @@ export default function changePassword() {
   const [token, setToken] = useState("");
   const searchParams = useSearchParams();
 
-   const ResetPasswordRequest = {
+  const ResetPasswordRequest = {
     password,
     confirmPassword
   }
@@ -42,44 +42,53 @@ export default function changePassword() {
   }
 
   useEffect(() => {
-      const userIdParam = searchParams.get("userId");
-      const tokenParam = encodeURIComponent(searchParams.get("token") || "");
-      if (userIdParam && tokenParam) {
-        setUserId(userIdParam);
-        setToken(tokenParam);
+    const userIdParam = searchParams.get("userId");
+    const tokenParam = encodeURIComponent(searchParams.get("token") || "");
+    if (userIdParam && tokenParam) {
+      setUserId(userIdParam);
+      setToken(tokenParam);
+    }
+  }, [searchParams]);
+
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    console.log("user Id", userId)
+    console.log("token", token)
+    try {
+      const response = await axios.patch<any>(`https://localhost:7195/api/users/reset-password?userId=${userId}&token=${token}`,
+        {
+          password,
+          confirmPassword
+        }
+      );
+      console.log("Respuesta del servidor: ok", response.data);
+      router.push('/login');
+    } catch (error: any) {
+      if (error.response) {
+        // La solicitud se realizó pero el servidor respondió con un código de error
+        console.error("Error de respuesta del servidor:", error.response.data);
+        console.error("Estado HTTP:", error.response.status);
+      } else if (error.request) {
+        // La solicitud se hizo pero no se recibió respuesta
+        console.error("No se recibió respuesta del servidor:", error.request);
+      } else {
+        // Error al configurar la solicitud
+        console.error("Error al configurar la solicitud:", error.message);
       }
-    }, [searchParams]);
-  
-    const handleSubmit = async (event: { preventDefault: () => void; }) => {
-      event.preventDefault();
-      console.log("user Id",userId)
-      console.log("token",token)
-      try {
-        const response = await axios.patch<any>(`https://localhost:7195/api/users/reset-password?userId=${userId}&token=${token}`,
-      {
-        password,
-        confirmPassword
-      }
-    );
-        console.log("Respuesta del servidor: ok", response.data);
-        
-        router.push('/login');
-      } catch (error) {
-        console.error("Error al enviar los datos:", error);
-      }
-    };
+    }
+  };
 
   return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="bg-white p-8 rounded-xl shadow-md max-w-lg w-full">
+    <div className="flex items-center justify-center h-screen">
+      <div className="bg-white p-8 rounded-xl shadow-md max-w-lg w-full">
+        <br></br>
+        <div className="mb-4 text-center">
+          <Image src="/customers/vsualitteLogo.png" alt="Logo" width={190} height={100} className="mx-auto" priority={true} />
           <br></br>
-         <div className="mb-4 text-center">
-            <Image src="/customers/vsualitteLogo.png" alt="Logo" width={190} height={100} className="mx-auto" priority={true}/>
-           <br></br>
-            <div className="mb-2 text-xl text-center font-bold">Cambiar contraseña</div>
-          </div>
-          <br></br>
-          <form onSubmit={handleSubmit}>
+          <div className="mb-2 text-xl text-center font-bold">Cambiar contraseña</div>
+        </div>
+        <br></br>
+        <form onSubmit={handleSubmit}>
           <div className="mb-2 text-lg">Contraseña nueva</div>
           <div className="mb-4 relative">
             <input
@@ -88,6 +97,7 @@ export default function changePassword() {
               className="w-full p-2 border border-gray-300 rounded-md text-gray-500 border-black"
               value={password}
               onChange={handlePasswordInputChange}
+              required
             />
             <div
               className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer"
@@ -107,6 +117,7 @@ export default function changePassword() {
               className="w-full p-2 border border-gray-300 rounded-md text-gray-500 border-black"
               value={confirmPassword}
               onChange={handleConfirmPasswordInputChange}
+              required
             />
             <div
               className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer"
@@ -120,11 +131,11 @@ export default function changePassword() {
           </div>
           <div className="mb-4">
             <button type="submit" className="w-full text-white p-2 rounded-2xl">
-              Ingresar
+              Enviar
             </button>
           </div>
-          </form>
-        </div>
-      </div>   
+        </form>
+      </div>
+    </div>
   );
 }

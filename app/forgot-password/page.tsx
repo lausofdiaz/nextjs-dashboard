@@ -15,23 +15,23 @@ export default function LoginPage() {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     try {
-      await axios.post('https://localhost:7195/api/users/forgot-password',  email ,
-      {
-        headers: {
-          'Content-Type': 'application/json'
+      await axios.post('https://localhost:7195/api/users/forgot-password', email,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      }
-    );
-    Swal.fire({
-      icon: "success",
-      title: "Correo electrónico enviado con exito",
-      showConfirmButton: false,
-      timer: 1500
-    });
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Correo electrónico enviado con exito",
+        showConfirmButton: false,
+        timer: 1500
+      });
       setEmail("");
     } catch (error) {
       alert('Error al enviar el correo electrónico');
-    console.log(error);
+      console.log(error);
     }
   };
 
@@ -56,7 +56,7 @@ export default function LoginPage() {
           <div className="mb-2 text-lg">Correo electrónico</div>
           <div className="mb-4">
             <input
-              type="text"
+              type="email"
               value={email}
               onChange={handleEmailInputChange}
               required
@@ -69,7 +69,7 @@ export default function LoginPage() {
               Enviar
             </button>
           </div>
-        </form>        
+        </form>
       </div>
     </div>
   );

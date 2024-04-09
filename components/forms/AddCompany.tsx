@@ -1,10 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { User } from './types/User';
+import { User } from '../types/User';
 import Cookies from 'js-cookie';
 import axios, { AxiosRequestConfig } from 'axios';
-import { BussinessSector } from './types/BussinesSector';
+import { BussinessSector } from '../types/BussinesSector';
 import Swal from 'sweetalert2';
+import { addCompany, getUsersAndBussinessSectors } from '@/api/addCompany';
 
 export default function AddCompany({ isVisible, onClose }: { isVisible: boolean, onClose: () => void }) {
     if (!isVisible) return null;
@@ -26,50 +27,24 @@ export default function AddCompany({ isVisible, onClose }: { isVisible: boolean,
     };
 
     useEffect(() => {
-        const getUsersWithToken = async () => {
-            try {
-                const token = Cookies.get('token');
-                if (!token) {
-                    throw new Error('No hay token de sesión');
-                }
-                const config: AxiosRequestConfig = {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                };
-                const responses = await axios.get('https://localhost:7195/api/users/all', config);
-                const responsesB = await axios.get('https://localhost:7195/api/bussinesssector', config);
-                setUsers(responses.data);
-                setBussinessSector(responsesB.data);
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
+        const fetchData = async () => {
+            const { users, bussinessSectors } = await getUsersAndBussinessSectors();
+            setUsers(users);
+            setBussinessSector(bussinessSectors);
         };
-        getUsersWithToken();
+        fetchData();
     }, []);
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-
-        try {
-            const token = Cookies.get('token');
-            if (!token) {
-                throw new Error('No hay token de sesión');
-            }
-            const config: AxiosRequestConfig = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-            const response = await axios.post('https://localhost:7195/api/company', formData, config);
-            console.log(response.data);
+        const success = await addCompany(formData);
+        if (success) {
             Swal.fire({
                 icon: 'success',
                 title: 'Empresa registrada',
                 showConfirmButton: false,
                 timer: 3000,
             }).then(() => {
-                // Limpiar los campos del formulario después de la alerta
                 setFormData({
                     companyName: "",
                     nit: "",
@@ -81,14 +56,13 @@ export default function AddCompany({ isVisible, onClose }: { isVisible: boolean,
                     contactUserId: null
                 });
             });
-        }
-        catch (error) {
-            if (axios.isAxiosError(error) && error.response?.status === 401) {
-                console.error('Error: No autorizado para realizar esta acción');
-            } else {
-                console.log(formData)
-                console.error('Error al enviar la solicitud POST:', error);
-            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al registrar la empresa',
+                showConfirmButton: false,
+                timer: 3000,
+            });
         }
     };
     return (
@@ -137,7 +111,7 @@ export default function AddCompany({ isVisible, onClose }: { isVisible: boolean,
                                 <input name="personContactEmail" value={formData.personContactEmail || ''}
                                     onChange={handleChange}
                                     className="appearance-none block w-full text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                                    type="text" placeholder="Ingrese el correo" required />
+                                    type="email" placeholder="Ingrese el correo" required />
                             </div>
                             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                                 <label className="block tracking-wide text-gray-700 text-mb  mb-2">
